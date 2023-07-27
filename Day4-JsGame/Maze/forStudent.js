@@ -164,7 +164,7 @@ function keyPush(evt){
 			// 	alert("sdf");
 			// }, 1000);
 			setTimeout(()=>{
-				alert("asdf");
+				alert("You Win!");
 				initialize();
 			}, 1000);
 		}
