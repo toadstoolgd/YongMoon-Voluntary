@@ -65,10 +65,10 @@ const countdownSubmit = () => {
             rotate(); // 상대편의 카드를 뒤집는 함수 실행
             countdown.innerHTML = start();
         }, 4000);
-        setTimeout(() => { // 9초 후 원상복귀
+        setTimeout(() => { // 8초 후 원상복귀
             rotate(); // 상대편의 카드를 뒤집는 함수 실행(원상복귀)
             countdown.innerHTML = "Ready"; // 다시 Ready로 변경
-        }, 9000);
+        }, 8000);
     } else if(select[0] == undefined) { // 가위바위보가 선택되지 않으면 select 배열은 초기 설정대로 [undefined]일 것, 따라서 가위바위보를 선택하지 않은 것이므로 알림을 띄워주며, 가위바위보 승패 판단을 하지 않는다.
         alert("가위바위보를 선택하세요!")
     }
@@ -87,11 +87,11 @@ const numToDetail = (num) => { // -1, 0, 1을 가위, 바위, 보자기로 변�
 }
 
 const start = () => { // 메인함수로, 상대방의 패를 결정하고,
-    let answer = randomNumber(-1, 1);
-    changeIMG(answer);
-    console.log("상대방 :", numToDetail(answer))
     let submit = select[0];
     console.log("사용자 :", numToDetail(submit))
+    let answer = randomNumber(-1, 1, submit);
+    changeIMG(answer);
+    console.log("상대방 :", numToDetail(answer))
     return judge(answer, submit);
 };
 
@@ -105,12 +105,39 @@ const changeIMG = (answer) => { // randomNumber로부터 정해진 answer, 즉 �
     }
 };
 
-const randomNumber = (n, m) => { // n부터 m까지의 랜덤한 숫자를 만드는 난수 발생 함수를 만드세요! return 타입은 INT입니다!
+const randomNumber = (n, m, inputed) => { // n부터 m까지의 랜덤한 숫자를 만드는 난수 발생 함수를 만드세요! return 타입은 INT입니다!
 	/* 
      * n에는 시작 값이 들어오고, m에는 끝 값이 들어오게 되며
      * n~m까지의 난수를 발생시키는 random 함수를 만드세요! (Tip. 2일차 JavaScript 기초 파일의 27페이지를 확인해보세요!)
      * return 타입은 정수 타입인 INT입니다!
      */
+    let randnum = Math.floor(Math.random() * 1000);
+
+    if (inputed == -1) {
+        if (randnum < 600) {
+            return 0;
+        } else if (randnum>=600 && randnum< 950) {
+            return -1;
+        } else {
+            return 1;
+        }
+    } else if (inputed == 0) {
+        if (randnum < 600) {
+            return 1;
+        } else if (randnum>=600 && randnum < 950) {
+            return 0;
+        } else {
+            return -1;
+        }
+    } else {
+        if (randnum < 600) {
+            return -1;
+        } else if (randnum>=600 && randnum < 950) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 };
 
 const judge = (answer, submit) => { // 결과를 "Draw", "Lose", "Win" 형태로 도출하여 String의 형태로 return하세요!
@@ -121,4 +148,17 @@ const judge = (answer, submit) => { // 결과를 "Draw", "Lose", "Win" 형태로
      * answser와 submit의 값을 비교하여 자신이 비겼는지, 졌는지, 이겼는지 판단하는 함수를 만드세요! 
      * return 타입은 문자열인 String이며, "Draw", "Lose", "Win" 중 하나로 return되게 하면 됩니다!
      */
+    
+    if (answer == submit) {
+        needMoreTime = 0;
+        return "Draw";
+    }
+    else if ((answer == 1 && submit == 0 )||(answer == 0 && submit == -1)||(answer == -1 && submit == 1)) {
+        needMoreTime = 0;
+        return "Lose";
+    }
+    else {
+        needMoreTime = 1;
+        return "당신은 5%의 확률을 뚫으셨습니다!";
+    }
 };
