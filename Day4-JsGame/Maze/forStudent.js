@@ -13,7 +13,7 @@
 
 */
 
-
+var colored = "red";
 var tc = 21; // tile count (무조건 홀수)
 var gs = 20; // 미로의 정사각형 한 칸 사이즈, grid size
 var field; // 미로 벽에 대해 값이 0인 맵 위치 배열
@@ -43,8 +43,20 @@ function enterkey() {
          * 미로 사이즈가 짝수면 "Please enter an odd number." 라는 경고 메시지 생성
          * 미로 사이즈가 홀수면 미로의 사이즈를 타일의 갯수 변수에 저장, 게임 시작 함수 호출
          */     
-    	
+    if (sizeInput%2 !== 0) {
+		tc = sizeInput;
+		initialize();
+	} else {
+		alert("Pls enter an odd number");
+	}
     }
+}
+
+function colorset() {
+	if (window.event.keyCode == 13) {
+	colored = document.getElementById("color").value;
+	initialize();
+	}
 }
 
 
@@ -72,9 +84,8 @@ function initialize(){
 	randomMazeGenerator();
 	
 	cx = 0; cy = 1;
-	ctx.fillStyle = "red";
+	ctx.fillStyle = colored;
 	ctx.fillRect(cx*gs, cy*gs, gs, gs); // 맨 처음 빨간 점 위치
-	
 }
 
 // 미로의 벽이 아닌 지나갈 수 있는 길을 위치에 맞게 흰색 타일로 지정하는 함수
@@ -86,9 +97,10 @@ function makeWay(xx,yy){
 
 // 방향 키 이벤트
 function keyPush(evt){
+	console.log(evt.keyCode);
 	
 	switch(evt.keyCode){ 
-
+		
 		// 여기에 채워넣어 코드를 완성하세요!
 		/*
 		 * evt.keyCode : 키보드에서 누른 키의 값을 식별하는 코드
@@ -100,6 +112,30 @@ function keyPush(evt){
 		 * right : 39
 		 * down : 40
 		*/
+		case 37: // left move
+			xv =- 1; yv = 0;
+			break;
+		case 38: // up move
+			xv = 0; yv =- 1;
+			break;
+		case 39: // right move
+			xv = 1; yv = 0;
+			break;
+		case 40: // down move
+			xv = 0; yv = 1;
+			break;
+		case 65: // left move
+			xv =- 1; yv = 0;
+			break;
+		case 87: // up move
+			xv = 0; yv =- 1;
+			break;
+		case 68: // right move
+			xv = 1; yv = 0;
+			break;
+		case 83: // down move
+			xv = 0; yv = 1;
+			break;
 	}
 
     
@@ -111,7 +147,7 @@ function keyPush(evt){
 		cy -= yv;
 		return;
 	} else{
-		ctx.fillStyle="red";
+		ctx.fillStyle=colored;
 		ctx.fillRect(cx*gs, cy*gs, gs, gs);
 		ctx.fillStyle="white";
 		ctx.fillRect((cx-xv)*gs, (cy-yv)*gs, gs, gs);
@@ -121,6 +157,17 @@ function keyPush(evt){
         /* 
          * 현재 위치 좌표와 도착 지점의 좌표를 비교하여 도착 지점에 도달했을 때, "You Win!" 이라는 경고 메시지 생성, 게임 리셋 함수 호출
          */
+		if (cx == tc-1 && cy == tc-2) {
+			// var i = 0;
+			// setTimeout(() => {
+			// 	i++;
+			// 	alert("sdf");
+			// }, 1000);
+			setTimeout(()=>{
+				alert("asdf");
+				initialize();
+			}, 1000);
+		}
 	}
 		
 }
@@ -134,7 +181,14 @@ function randomMazeGenerator(){
 	    /*
 	     * 길이 막혔을 때, 안 막혔을 때 각각 함수 호출 (어떠한 문법, 어떠한 변수, 어떠한 함수를 써야할지 잘 생각해보세요!)
 	     */
+	if (stucked == true) {
+		backtracking();
+	} else {
+		tracking();
+	}
     }
+	ctx.fillStyle="blue";
+	ctx.fillRect(tc*gs, (tc-2)*gs, gs, gs);
 }
 
 
@@ -145,6 +199,7 @@ function tracking(){
 	/* 
          * 0부터 3까지의 정수를 랜덤으로 생성하는 key 변수 생성 (Math.random 이용하기!, 한 줄 코드.)
          */
+	let key = Math.floor(Math.random()*4);
 	
 	switch(key){
 	case 0: // left move
